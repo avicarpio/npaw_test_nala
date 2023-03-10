@@ -64,7 +64,7 @@ recognition.onresult = (event) => {
   const newText = results[results.length - 1][0].transcript;
   speechText.textContent += newText + "\n";
   fetchAsync(
-    "http://ai1.npaw.com:8000/nala?query=" + newText + "?&module=sql"
+    "https://ai1.npaw.com:8000/nala?query=" + newText + "?&module=sql"
   ).then((naLaResponse) => {
     console.log(naLaResponse);
     nalaText.textContent += naLaResponse.extra.text + "\n";
