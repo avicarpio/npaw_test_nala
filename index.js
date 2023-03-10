@@ -120,7 +120,7 @@ speech.onend = function () {
 };
 
 async function fetchAsync(url) {
-  let response = await fetch(url);
+  let response = await fetch(url, {mode: 'no-cors'});
   let data = await response.json();
   return data;
 }
