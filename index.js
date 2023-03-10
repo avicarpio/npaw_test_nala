@@ -63,20 +63,8 @@ recognition.onresult = (event) => {
   console.log(results);
   const newText = results[results.length - 1][0].transcript;
   speechText.textContent += newText + "\n";
-  fetchAsync(
-    "http://ai1.npaw.com:8000/nala?query=" + newText + "?&module=sql"
-  ).then((naLaResponse) => {
-    console.log(naLaResponse);
-    nalaText.textContent += naLaResponse.extra.text + "\n";
-    if (text2speechEnabled) {
-      text2speech(naLaResponse.extra.text);
-    } else {
-      ttlSpeech = false;
-      if (recognitionEnabled) {
-        recognition.start();
-      }
-    }
-  });
+  req.open("GET", "http://ai1.npaw.com:8000/nala?query=" + newText + "?&module=sql");
+  req.send();
 };
 
 recognition.onerror = (event) => {
@@ -119,8 +107,20 @@ speech.onend = function () {
   }
 };
 
-async function fetchAsync(url) {
-  let response = await fetch(url, {mode: 'no-cors'});
-  let data = await response.json();
-  return data;
+function reqListener() {
+  const nalaResponse = req.response;
+  console.log(nalaResponse);
+    nalaText.textContent += nalaResponse.extra.text + "\n";
+    if (text2speechEnabled) {
+      text2speech(nalaResponse.extra.text);
+    } else {
+      ttlSpeech = false;
+      if (recognitionEnabled) {
+        recognition.start();
+      }
+    }
 }
+
+const req = new XMLHttpRequest();
+req.responseType = 'json';
+req.addEventListener("load", reqListener);
